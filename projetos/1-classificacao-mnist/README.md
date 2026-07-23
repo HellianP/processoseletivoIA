@@ -133,4 +133,4 @@ Amostra 3: predito=1 | real=1
 Amostra 4: predito=0 | real=0
 Amostra 5: predito=4 | real=4
 
-Nas cinco amostras avaliadas, o modelo classificou corretamente todos os dígitos apresentados, demonstrando que a conversão para TensorFlow Lite preservou o desempenho do modelo treinado.
+Nas cinco amostras avaliadas, o modelo classificou corretamente todos os dígitos apresentados, demonstrando que a conversão para TensorFlow Lite preservou o desempenho do modelo treinado. 
