@@ -113,7 +113,7 @@ Essa técnica reduz significativamente o tamanho do modelo sem necessidade de no
 ### 4️⃣ Resultados Obtidos
 
 Informe a acurácia de validação obtida e o tamanho dos arquivos `model.h5` e `model.tflite`.
-Melhor acurácia de validação foi de 98,71%
+Melhor acurácia de validação foi de 98,83%
 Tamanho do modelo treinado (model.h5): 1.406.904 bytes (aproximadamente 1,34 MB)
 Tamanho do modelo otimizado (model.tflite): 125.368 bytes (aproximadamente 122,43 KB)
 A redução de tamanho foi de aproximadamente 91,1%, mantendo desempenho adequado para inferência.
