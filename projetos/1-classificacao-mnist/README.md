@@ -85,28 +85,52 @@ projetos/1-classificacao-mnist/
 
 ## 📝 Relatório do Candidato
 
-👤 **Nome Completo:**
+👤 Hellian Sampaio Silva Peixinho
 
 ### 1️⃣ Resumo da Arquitetura do Modelo
 
-Descreva, em palavras, a arquitetura da CNN implementada em `train_model.py` (número de blocos convolucionais, uso de batch normalization/dropout, estratégia de validação/early stopping).
+Foi desenvolvida uma Rede Neural Convolucional (CNN) para classificação de dígitos manuscritos do conjunto MNIST.
+
+A arquitetura possui três blocos convolucionais compostos por camadas Conv2D, BatchNormalization e MaxPooling2D. Após os blocos convolucionais, foi utilizada uma camada Flatten seguida de uma camada totalmente conectada (Dense) com 128 neurônios. Antes da camada de saída foi aplicada uma camada Dropout (0.5) para reduzir o risco de overfitting. A camada de saída possui 10 neurônios com função de ativação Softmax, correspondentes às classes de dígitos de 0 a 9.
+
+O treinamento foi realizado utilizando EarlyStopping monitorando a perda no conjunto de validação (val_loss), com restauração automática dos melhores pesos obtidos durante o treinamento.
 
 ### 2️⃣ Bibliotecas Utilizadas
 
-Liste as principais bibliotecas utilizadas, preferencialmente com suas versões.
+TensorFlow 2.19 e Keras
+NumPy 2.1
 
 ### 3️⃣ Técnica de Otimização do Modelo
 
-Explique qual técnica foi utilizada para otimizar o modelo em `optimize_model.py`.
+Foi utilizada a técnica Dynamic Range Quantization durante a conversão do modelo Keras (.h5) para TensorFlow Lite (.tflite).
+
+A otimização foi aplicada utilizando:
+
+converter.optimizations = [tf.lite.Optimize.DEFAULT]
+
+Essa técnica reduz significativamente o tamanho do modelo sem necessidade de novo treinamento, mantendo desempenho adequado para execução em dispositivos Edge AI.
 
 ### 4️⃣ Resultados Obtidos
 
 Informe a acurácia de validação obtida e o tamanho dos arquivos `model.h5` e `model.tflite`.
+Melhor acurácia de validação foi de 98,71%
+Tamanho do modelo treinado (model.h5): 1.406.904 bytes (aproximadamente 1,34 MB)
+Tamanho do modelo otimizado (model.tflite): 125.368 bytes (aproximadamente 122,43 KB)
+A redução de tamanho foi de aproximadamente 91,1%, mantendo desempenho adequado para inferência.
 
 ### 5️⃣ Comentários Adicionais (Opcional)
 
-Dificuldades encontradas, decisões técnicas importantes, limitações do modelo, aprendizados durante o desafio.
+Durante o desenvolvimento foi adotada uma estrutura modular, separando as etapas de treinamento, otimização e inferência em partes independentes,Inicialmente os modelos estavam sendo salvos no diretório de execução do programa. Esse comportamento foi corrigido utilizando caminhos relativos ao diretório do próprio script (__file__), garantindo que os artefatos fossem sempre gerados na pasta do projeto, independentemente do diretório em que o script fosse executado.
+
+Também foi utilizada a estratégia de EarlyStopping para evitar overfitting e reduzir o tempo de treinamento.
 
 ### 6️⃣ Exemplo de Inferência
 
-Cole a saída do terminal ao rodar `run_inference.py` (predito vs. real para as 5+ amostras), e comente brevemente se houve algum caso interessante (acerto ou erro) entre as amostras testadas.
+Rodando inferência em 5 amostras usando model.tflite:
+Amostra 1: predito=7 | real=7
+Amostra 2: predito=2 | real=2
+Amostra 3: predito=1 | real=1
+Amostra 4: predito=0 | real=0
+Amostra 5: predito=4 | real=4
+
+Nas cinco amostras avaliadas, o modelo classificou corretamente todos os dígitos apresentados, demonstrando que a conversão para TensorFlow Lite preservou o desempenho do modelo treinado.
