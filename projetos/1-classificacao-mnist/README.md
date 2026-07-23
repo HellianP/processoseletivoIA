@@ -91,42 +91,49 @@ projetos/1-classificacao-mnist/
 
 Foi desenvolvida uma Rede Neural Convolucional (CNN) para classificação de dígitos manuscritos do conjunto MNIST.
 
-A arquitetura possui três blocos convolucionais compostos por camadas Conv2D, BatchNormalization e MaxPooling2D. Após os blocos convolucionais, foi utilizada uma camada Flatten seguida de uma camada totalmente conectada (Dense) com 128 neurônios. Antes da camada de saída foi aplicada uma camada Dropout (0.5) para reduzir o risco de overfitting. A camada de saída possui 10 neurônios com função de ativação Softmax, correspondentes às classes de dígitos de 0 a 9.
+A arquitetura possui 3 blocos convolucionais compostos por camadas Conv2D, BatchNormalization e MaxPooling2D. Após os blocos convolucionais, foi utilizada uma camada Flatten seguida de uma camada totalmente conectada (Dense) com 128 neurônios. Antes da camada de saída foi aplicada uma camada Dropout com taxa de 0.5 para reduzir o risco de overfitting. A camada de saída possui 10 neurônios com função de ativação Softmax, correspondentes às classes de dígitos de 0 a 9.
 
-O treinamento foi realizado utilizando EarlyStopping monitorando a perda no conjunto de validação (val_loss), com restauração automática dos melhores pesos obtidos durante o treinamento.
+O treinamento foi realizado utilizando EarlyStopping monitorando a perda no conjunto de validação (`val_loss`), com restauração automática dos melhores pesos obtidos durante o treinamento.
+
+A separação dos dados foi realizada utilizando 80% das imagens para treinamento, 20% para validação e o conjunto original de teste do MNIST para avaliação final.
+
 
 ### 2️⃣ Bibliotecas Utilizadas
 
-TensorFlow 2.19 e Keras
-NumPy 2.1
+TensorFlow 2.15.1
+Keras (integrado ao TensorFlow 2.15.1)
+NumPy
 
 ### 3️⃣ Técnica de Otimização do Modelo
 
-Foi utilizada a técnica Dynamic Range Quantization durante a conversão do modelo Keras (.h5) para TensorFlow Lite (.tflite).
+Foi utilizada a técnica Dynamic Range Quantization durante a conversão do modelo Keras (`model.h5`) para TensorFlow Lite (`model.tflite`). A otimização foi aplicada utilizando: python converter.optimizations = [tf.lite.Optimize.DEFAULT]
 
-A otimização foi aplicada utilizando:
-
-converter.optimizations = [tf.lite.Optimize.DEFAULT]
-
-Essa técnica reduz significativamente o tamanho do modelo sem necessidade de novo treinamento, mantendo desempenho adequado para execução em dispositivos Edge AI.
 
 ### 4️⃣ Resultados Obtidos
+O treinamento foi realizado durante no máximo 15 épocas utilizando:
 
-Informe a acurácia de validação obtida e o tamanho dos arquivos `model.h5` e `model.tflite`.
-Melhor acurácia de validação foi de 98,83%
-Tamanho do modelo treinado (model.h5): 1.406.904 bytes (aproximadamente 1,34 MB)
-Tamanho do modelo otimizado (model.tflite): 125.368 bytes (aproximadamente 122,43 KB)
-A redução de tamanho foi de aproximadamente 91,1%, mantendo desempenho adequado para inferência.
+Otimizador: Adam
+Batch size: 64
+EarlyStopping com patience=3
+
+O treinamento foi interrompido automaticamente na época 9 devido à estabilização da métrica de validação.
+
+A melhor acurácia obtida no conjunto de validação foi: 98,76%
+Tamanho dos modelos:
+Modelo treinado (model.h5): 1.410.856 bytes (aproximadamente 1,38 MB)
+Modelo otimizado (model.tflite): 122.616 bytes (aproximadamente 119,74 KB)
+A conversão resultou em uma redução aproximada de 91,31% no tamanho do arquivo, mantendo o desempenho adequado para inferência.
 
 ### 5️⃣ Comentários Adicionais (Opcional)
 
-Durante o desenvolvimento foi adotada uma estrutura modular, separando as etapas de treinamento, otimização e inferência em partes independentes,Inicialmente os modelos estavam sendo salvos no diretório de execução do programa. Esse comportamento foi corrigido utilizando caminhos relativos ao diretório do próprio script (__file__), garantindo que os artefatos fossem sempre gerados na pasta do projeto, independentemente do diretório em que o script fosse executado.
+Durante o desenvolvimento foi adotada uma estrutura modular, separando as etapas de treinamento, otimização e inferência em scripts independente,Também foi utilizada a estratégia de EarlyStopping para evitar overfitting e reduzir o tempo de treinamento. Um dos principais desafios encontrados foi garantir a compatibilidade entre o modelo salvo e o ambiente de validação automática pois inicialmente o modelo havia sido gerado utilizando uma versão mais recente do TensorFlow/Keras, causando incompatibilidade durante o carregamento pelo pipeline de validação. A solução adotada foi utilizar TensorFlow 2.15.1 em um ambiente Python 3.11 e gerar novamente os artefatos (model.h5 e model.tflite).
 
-Também foi utilizada a estratégia de EarlyStopping para evitar overfitting e reduzir o tempo de treinamento.
+Além disso, os caminhos de salvamento foram ajustados utilizando o diretório do próprio script (__file__), garantindo que os modelos fossem sempre gerados dentro da pasta correta do projeto..
 
 ### 6️⃣ Exemplo de Inferência
 
 Rodando inferência em 5 amostras usando model.tflite:
+
 Amostra 1: predito=7 | real=7
 Amostra 2: predito=2 | real=2
 Amostra 3: predito=1 | real=1
